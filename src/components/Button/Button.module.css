@@ -1,0 +1,22 @@
+.btn {
+  font-size: 13px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  line-height: 1.75;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  padding: 5px 0;
+  width: 100px;
+  cursor: pointer;
+  background-color: #fff;
+  font-weight: bold;
+}
+
+.sell {
+  color: red;
+  border: 1px solid red;
+}
+
+.buy {
+  color: green;
+  border: 1px solid green;
+}

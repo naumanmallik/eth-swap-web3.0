@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  padding: 12px 10px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  outline: none;
+  border: 1px solid #e5dbdb;
+  background-color: #fff;
+  box-shadow: 0 -2px 15px 4px rgb(0 0 0 / 6%);
+}
+
+.input:disabled {
+  background-color: #dddddd;
+  cursor: not-allowed;
+}
+
+.txt {
+  padding: 0 0 5px 5px;
+}
