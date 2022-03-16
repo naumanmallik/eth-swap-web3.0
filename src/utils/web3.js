@@ -27,18 +27,19 @@ export const connectWallethandler = async ({ setConnected, setError }) => {
 };
 
 export const initWeb3 = () => {
-  let instance = new window.Web3(window.ethereum);
+  const instance = new window.Web3(window.ethereum);
   webInstance = instance;
 };
 
 export async function getAccount() {
-  let accounts = await webInstance.eth.getAccounts();
-  let balanceInWei = await webInstance.eth.getBalance(accounts[0]);
+  const accounts = await webInstance.eth.getAccounts();
+  const balanceInWei = await webInstance.eth.getBalance(accounts[0]);
   const ethBalance = await webInstance.utils.fromWei(balanceInWei);
   return ethBalance;
 }
 
 export async function initContract() {
   const contract = new webInstance.eth.Contract(EthSwap.abi, contractAddress);
+  console.log({ contract });
   return await contract.methods.balanceOf(walletAddress).call();
 }
