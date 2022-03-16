@@ -1,32 +1,34 @@
 import * as React from "react";
 import styles from "./App.module.css";
-import Button from "./components/Button";
-import Input from "./components/Input";
+import ETHSwap from "./components/ETHSwap";
+import { connectWallethandler, initWeb3 } from "./utils/web3";
 
 export default function App() {
-  const [isSell, setIsSell] = React.useState(true);
-  const sellHandler = () => {
-    setIsSell(true);
-  };
-  const buyHandler = () => {
-    setIsSell(false);
-  };
+  const [connected, setConnected] = React.useState(false);
+  const [error, setError] = React.useState("");
+
+  React.useEffect(() => {
+    initWeb3();
+  }, []);
 
   return (
     <div className={styles.root}>
       <div className={styles.container}>
         <h1 className={styles.heading}>ETH-SWAP</h1>
-        <div className={styles.buttonRoot}>
-          <Button text={"Sell"} clickHandler={sellHandler} />
-          <Button text={"Buy"} clickHandler={buyHandler} />
-        </div>
-        <div className={styles.inputRoot}>
-          <Input text="Token" enable={!isSell} />
-          <Input text="Eth" enable={isSell} />
-        </div>
-        <div className={styles.totalText}>
-          <span>Total Tokens: 12</span>
-          <span>Total Eth: 21</span>
+        {connected ? (
+          <ETHSwap />
+        ) : (
+          <div className={styles.btnRoot}>
+            <button
+              onClick={() => connectWallethandler({ setConnected, setError })}
+              className={styles.connectbtn}
+            >
+              Connect with Meta Mask
+            </button>
+          </div>
+        )}
+        <div className={styles.errorRoot}>
+          <span className={styles.error}>{error}</span>
         </div>
       </div>
     </div>
