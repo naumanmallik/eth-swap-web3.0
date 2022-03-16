@@ -1,7 +1,6 @@
 import EthSwap from "./EthSwap.json";
-let webInstance,
-  walletAddress,
-  contractAddress = "0x7ED1Ead2a3C38fF4804B85999FC2C50c41d5Fd3c";
+let webInstance, walletAddress;
+const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 export const connectWallethandler = async ({ setConnected, setError }) => {
   try {
@@ -18,8 +17,8 @@ export const connectWallethandler = async ({ setConnected, setError }) => {
         ],
       })
       .then(() => window.ethereum.request({ method: "eth_requestAccounts" }))
-      .then((account) => {
-        walletAddress = account[0];
+      .then((accounts) => {
+        walletAddress = accounts[0];
         setConnected(true);
       });
   } catch (error) {
@@ -35,11 +34,11 @@ export const initWeb3 = () => {
 export async function getAccount() {
   let accounts = await webInstance.eth.getAccounts();
   let balanceInWei = await webInstance.eth.getBalance(accounts[0]);
-  const ethBalance =  await webInstance.utils.fromWei(balanceInWei);
+  const ethBalance = await webInstance.utils.fromWei(balanceInWei);
   return ethBalance;
 }
 
 export async function initContract() {
-  let contract = new webInstance.eth.Contract(EthSwap.abi, contractAddress);
+  const contract = new webInstance.eth.Contract(EthSwap.abi, contractAddress);
   return await contract.methods.balanceOf(walletAddress).call();
 }
