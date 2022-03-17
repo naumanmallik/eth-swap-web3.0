@@ -16,7 +16,7 @@ export default function App() {
       <div className={styles.container}>
         <h1 className={styles.heading}>ETH-SWAP</h1>
         {connected ? (
-          <ETHSwap />
+          <ETHSwap setError={setError} />
         ) : (
           <div className={styles.btnRoot}>
             <button

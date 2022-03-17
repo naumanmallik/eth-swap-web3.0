@@ -1,5 +1,5 @@
 import EthSwap from "./EthSwap.json";
-let webInstance, walletAddress;
+let webInstance, walletAddress, contract;
 const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 export const connectWallethandler = async ({ setConnected, setError }) => {
@@ -39,7 +39,20 @@ export async function getAccount() {
 }
 
 export async function initContract() {
-  const contract = new webInstance.eth.Contract(EthSwap.abi, contractAddress);
+  contract = new webInstance.eth.Contract(EthSwap.abi, contractAddress);
   console.log({ contract });
   return await contract.methods.balanceOf(walletAddress).call();
+}
+
+export async function buyToken({ value, setError }) {
+  try {
+    let ethval = value / 100;
+    const weiVal = window.Web3.utils.toWei(ethval?.toString());
+    let val = await contract.methods
+      .buyTokens()
+      .send({ value: weiVal, from: walletAddress });
+    console.log("val", val);
+  } catch (error) {
+    setError(error.message);
+  }
 }

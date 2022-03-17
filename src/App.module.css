@@ -62,3 +62,20 @@
 .error {
   color: red;
 }
+
+.convertBtnRoot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.convertBtn {
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 15px 20px;
+  border: 1px solid rgba(25, 118, 210, 0.5);
+  color: rgb(25, 118, 210);
+  background: transparent;
+  font-weight: bold;
+}
