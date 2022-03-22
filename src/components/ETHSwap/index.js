@@ -2,7 +2,12 @@ import React from "react";
 import styles from "../../App.module.css";
 import Button from "../Button";
 import Input from "../Input";
-import { getAccount, initContract, buyToken } from "../../utils/web3";
+import {
+  getAccount,
+  initContract,
+  buyToken,
+  sellToken,
+} from "../../utils/web3";
 
 export default function ETHSwap({ setError }) {
   const [isSell, setIsSell] = React.useState(true);
@@ -27,17 +32,21 @@ export default function ETHSwap({ setError }) {
 
   React.useEffect(() => {
     async function getAccountFn() {
-      const balance = await getAccount();
-      setBalance(balance);
-      const token = await initContract();
-      setToken(token);
+      try {
+        const balance = await getAccount();
+        setBalance(balance);
+        const token = await initContract();
+        setToken(token);
+      } catch (error) {
+        setError(error?.message);
+      }
     }
     getAccountFn();
-  }, []);
+  }, [setError]);
 
   const handleEhtWap = async () => {
     if (isSell) {
-      console.log("Sell me with token");
+      await sellToken({ value: tokenVal, setError });
     } else {
       await buyToken({ value: ethVal, setError });
     }

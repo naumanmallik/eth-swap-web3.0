@@ -1,6 +1,8 @@
 import EthSwap from "./EthSwap.json";
-let webInstance, walletAddress, contract;
-const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
+import TokenABI from "./TokenABI.json";
+let webInstance, walletAddress, ethSwapContract, tokenContract;
+const { REACT_APP_ETHSWAP_CONTRACT_ADDRESS, REACT_APP_TOKEN_CONTRACT_ADDRESS } =
+  process.env;
 
 export const connectWallethandler = async ({ setConnected, setError }) => {
   try {
@@ -39,20 +41,56 @@ export async function getAccount() {
 }
 
 export async function initContract() {
-  contract = new webInstance.eth.Contract(EthSwap.abi, contractAddress);
-  console.log({ contract });
-  return await contract.methods.balanceOf(walletAddress).call();
+  ethSwapContract = new webInstance.eth.Contract(
+    EthSwap.abi,
+    REACT_APP_ETHSWAP_CONTRACT_ADDRESS
+  );
+
+  console.log({ ethSwapContract });
+
+  tokenContract = new webInstance.eth.Contract(
+    TokenABI.abi,
+    REACT_APP_TOKEN_CONTRACT_ADDRESS
+  );
+
+  console.log({ tokenContract });
+
+  return await tokenContract.methods.balanceOf(walletAddress).call();
 }
 
 export async function buyToken({ value, setError }) {
+  if (!value) {
+    alert("Please input Eth value");
+    return;
+  }
   try {
-    let ethval = value / 100;
-    const weiVal = window.Web3.utils.toWei(ethval?.toString());
-    let val = await contract.methods
+    const weiVal = webInstance.utils.toWei(value?.toString());
+    let val = await ethSwapContract.methods
       .buyTokens()
       .send({ value: weiVal, from: walletAddress });
     console.log("val", val);
   } catch (error) {
-    setError(error.message);
+    setError(error?.message);
+  }
+}
+
+export async function sellToken({ value, setError }) {
+  if (!value) {
+    alert("Please input Eth value");
+    return;
+  }
+  try {
+    const weiVal = webInstance.utils.toWei(value?.toString());
+    const tokenConfitmation = await tokenContract.methods
+      .approve(ethSwapContract._address, weiVal)
+      .send({ from: walletAddress });
+    if (tokenConfitmation?.status) {
+      let val = await ethSwapContract.methods
+        .sellTokens(weiVal)
+        .send({ from: walletAddress });
+      console.log("val sell token: ", val);
+    }
+  } catch (error) {
+    setError(error?.message);
   }
 }
