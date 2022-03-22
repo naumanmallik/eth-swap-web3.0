@@ -75,13 +75,12 @@ export async function sellToken({ value }) {
     alert("Please input Eth value");
     return;
   }
-  const weiVal = webInstance.utils.toWei(value?.toString());
   const tokenConfitmation = await tokenContract.methods
-    .approve(ethSwapContract._address, weiVal)
+    .approve(ethSwapContract._address, value)
     .send({ from: walletAddress });
   if (tokenConfitmation?.status) {
     let val = await ethSwapContract.methods
-      .sellTokens(weiVal)
+      .sellTokens(value)
       .send({ from: walletAddress });
     console.log("val sell token: ", val);
   }
