@@ -45,10 +45,14 @@ export default function ETHSwap({ setError }) {
   }, [setError]);
 
   const handleEhtWap = async () => {
-    if (isSell) {
-      await sellToken({ value: tokenVal, setError });
-    } else {
-      await buyToken({ value: ethVal, setError });
+    try {
+      if (isSell) {
+        await sellToken({ value: tokenVal, setError });
+      } else {
+        await buyToken({ value: ethVal, setError });
+      }
+    } catch (error) {
+      setError(error?.message);
     }
   };
 

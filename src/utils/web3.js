@@ -58,39 +58,31 @@ export async function initContract() {
   return await tokenContract.methods.balanceOf(walletAddress).call();
 }
 
-export async function buyToken({ value, setError }) {
+export async function buyToken({ value }) {
   if (!value) {
-    alert("Please input Eth value");
+    alert("Please input token value");
     return;
   }
-  try {
-    const weiVal = webInstance.utils.toWei(value?.toString());
-    let val = await ethSwapContract.methods
-      .buyTokens()
-      .send({ value: weiVal, from: walletAddress });
-    console.log("val", val);
-  } catch (error) {
-    setError(error?.message);
-  }
+  const weiVal = webInstance.utils.toWei(value?.toString());
+  let val = await ethSwapContract.methods
+    .buyTokens()
+    .send({ value: weiVal, from: walletAddress });
+  console.log("val", val);
 }
 
-export async function sellToken({ value, setError }) {
+export async function sellToken({ value }) {
   if (!value) {
     alert("Please input Eth value");
     return;
   }
-  try {
-    const weiVal = webInstance.utils.toWei(value?.toString());
-    const tokenConfitmation = await tokenContract.methods
-      .approve(ethSwapContract._address, weiVal)
+  const weiVal = webInstance.utils.toWei(value?.toString());
+  const tokenConfitmation = await tokenContract.methods
+    .approve(ethSwapContract._address, weiVal)
+    .send({ from: walletAddress });
+  if (tokenConfitmation?.status) {
+    let val = await ethSwapContract.methods
+      .sellTokens(weiVal)
       .send({ from: walletAddress });
-    if (tokenConfitmation?.status) {
-      let val = await ethSwapContract.methods
-        .sellTokens(weiVal)
-        .send({ from: walletAddress });
-      console.log("val sell token: ", val);
-    }
-  } catch (error) {
-    setError(error?.message);
+    console.log("val sell token: ", val);
   }
 }
